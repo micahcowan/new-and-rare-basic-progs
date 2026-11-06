@@ -24,3 +24,4 @@ serial connection so that I/O goes through a terminal program.
 The listings are in:
   * `orig/` the original listings from the book (or as close as I can type them)
   * `run6502/` adaptations to my particular KB9 emulation setup (see [RUNNING.md](RUNNING.md))
+  * `appleiie/` adaptations to AppleSoft, running on an Apple //e. I tested these using my terminal-oriented emulator [bobbin](https://github.com/micahcowan/bobbin)—i.e. `bobbin --remain-tty < appleiie/borg-attack.bas`.
