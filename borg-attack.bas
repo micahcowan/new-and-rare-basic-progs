@@ -59,7 +59,7 @@
 900 IF R<.6 THEN 930
 910 PRINT"Deflected!"
 920 GOTO 970
-930 D=D-1:IF D=0 THEN 1000
+930 D=D-1:IF D=0 THEN 1600
 935 PRINT"Hit, moderate damage."
 970 PRINT"Incoming..."
 972 E=E-(INT(RND(1)*68)+33)
