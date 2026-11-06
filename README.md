@@ -20,3 +20,7 @@ things like clear the screen, move the cursor to a different position, or
 provide color. You'll either need to adapt those to use more appropriate
 techniques for your chosen emulator/BASIC implementation, or else emulate a
 serial connection so that I/O goes through a terminal program.
+
+The listings are in:
+  * `orig/` the original listings from the book (or as close as I can type them)
+  * `run6502/` adaptations to my particular KB9 emulation setup (see [RUNNING.md](RUNNING.md))
