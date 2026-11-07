@@ -6,66 +6,23 @@ KIM-1 char in routine is at $1E5A
 I'm using the `run6502` command from
 => https://github.com/ShonFrazier/lib6502 ShonFrazier’s lib6502
 
-The command to run the simulation is
-```
-run6502 -l KB9.BIN -l 1E5A wrap.bin -G 300 -P 1EA0 -R 4065
-```
+Use the "kb9" wrapper script provided (invocation details below). It
+automatically sends answers to the initial "MEMORY WIDTH?", "TERMINAL
+WIDTH?", etc. questions, and sets up the terminal to disable things like
+line buffering, and carriage-return translation into newline characters.
 
-(KB9.BIN should be unmodified v1.1)
+Invoke it like: `kb9 some-prog.bas`. Be sure that both kb9 and run6502 are
+in your PATH, and that KB9.BIN (a binary image of KIM-1 BASIC 9) is in the
+same dir as the kb9 script. See below for necessary modifications to the
+stock KIM-1 BASIC 9 v1.1 binary.
 
-### run6502 invocation explanation
+## Fixing KIM-1 BASIC 9 v1.1
 
-(options explained out-of-order:)
-
-```
--l 2000 ~/dl/kb9v1/KB9.BIN ... -R 2000
-```
-KB9.BIN (v1.1) is designed to be loaded in at $2000, and starts from $4065. Fair enough.
-
-```
--P 1EA0
-```
-Jumps to $1EA0 should be treated as PUTCHAR.
-
-```
--l 1E5A wrap.bin -G 300
-```
-KB9 treats $1E5A as GETCHAR (and uses buffered I/O from C's getchar(3)). Originally, I just had `-G 1E5A`... but this doesn't work, as for line endings getchar(3) was returning a linefeed, whereas KIM BASIC expects a carriage return. I tried using `stty -icrnl` to direct the terminal emulation not to translate CRs on input into linefeeds... but that didn't work, because then the carriage returns were not detected as ending the buffer line to be sent to the emulator.
-
-To resolve this issue, I wrote a small wrapper routine to translate newlines into carriage returns on input, *within* the emulator, before passing along to BASIC. Since KIM BASIC expects to call $1E5A for every character fetch, we need the wrapper to live *there*, and have the actual getchar(3) hook live somewhere else. I wrote the wrapper to call to $300 for the actual getchar(3) call, and so we got -G 300 instead of -G 1E5A.
-
-### the char-input wrapper routine
-
-The following machine code, poked in at $300, did the trick for me:
-```
-20 00 03 08 c9 0a d0 02  a9 0d 28 60
-```
-
-ca65 source code:
-```
-.org $1E5A
-
-CIN=$300
-
-jsr CIN
-php
-    cmp #$0A
-    bne @a
-    lda #$0D
-@a:
-plp
-rts
-```
-
-commands used to build it:
-```
-ca65 wrap.asm65
-ld65 -t none -o wrap.bin wrap.o
-```
+These fixes assume a stock, unmodified v1.1 binary image
 
 ### Shutting up the constant BREAKs
 
-I'm not sure it's not a bad download of KIM-1 BASIC 9 v1.1, but when I try to run commands like LIST or RUN, it aborts with BREAK. *Sigh*, I'm not done yet!
+I'm not sure it's not a bad download of KIM-1 BASIC 9 v1.1, but when I tried to run commands like LIST or RUN, it aborts with BREAK. *Sigh*, I'm not done yet!
 
 => http://retro.hansotten.nl/uploads/files/kb9v11.zip This is the KB9 v1.1 I downloaded, in case it matters
 
@@ -84,48 +41,19 @@ Examining a smattering of code the KIM-1 BASIC manual mentions as being related 
 
 ...with the `LDA #$03` just preceding that `CMP #$03`, it seems like this will just always trigger? Hence why I wonder if I actually got a good download... anyway, I tried changing the `CMP #$03` to `CMP #$FF` with a `POKE 9959, 255` (or, edit the binary file at location $06E7 to set it to #$FF), and that fixed the problem. Of course, now nothing can trigger BREAK, but that hardly matters as a Control-C will cause run6502 to exit from a SIGTERM, so... *shrug*.
 
-### Final Tweaks
+### Dave Hassler’s Tweaks
 
-...and with that BREAK tweak, we’re up and running. Programs can be entered, we can list them, and they run fine.
-
-But we're not _quite_ done: since we used v1.1 (and I don't know the correct location to modify above for v1.2, which seems to change a number of locations around), we need to make the modifications described in the “New and Rare BASIC Programs”:
+Keep in mind! If you’re modifying the image directly, instead of memory
+locations after the image is loaded, then you must subtract ($2000) from the
+locations given below (i.e., leave out the initial "2" in locations).
 
 * Change the value of location $2AEE from $D0 to $F0 (POKE 10990,240), to enable the `GET` command
 * Disable BREAK on empty INPUT lines by changing the value at $2AA8 to $A9 (POKE 10920, 169)
-* Scan for backspace instead of underscore to delete chars—242C: 08 F0 F1; 243F: EA EA EA EA
-
-Note that, since we're using buffered IO, GET will actually wait until a newline is pressed... and then the rest of that line past the first character is automatically fed to the next GET or INPUT. You could probably set raw/unbuffered mode with stty (which, in combination with disabling the CR -> LF (icrnl) translation, might also eliminate the need for the $300 hack I wrote)... but honestly I'll probably just add an INPUT statement after every GET (or just use INPUT instead, I guess)
-
-### Wrapping it Up
-
-Finally, I use the following wrapper script (which I’ve named `kb9`), to automate setting memory limits, terminal width, math-library selection, and PRNG seeding. Invoke it like: `kb9 some-prog.bas`.
-
-```
-#!/usr/bin/env bash
-
-main() {
-    { cat header.bas; seed; stdbuf -i0 -o0 cat "$@" /dev/stdin; } \
-        | stdbuf -i0 -o0 ./run6502 \
-            -R 4065 \
-            -l 2000 KB9.BIN \
-            -P 1EA0 \
-            -l 1E5A wrap.bin -G 300
-}
-
-seed() {
-    # Enter instructions to seed the random number generator
-    echo "R = RND(-$((RANDOM % 32767)))"
-    echo "NEW"
-    echo "? \"START\""
-}
-
-main "$@"
-exit 0
-```
+* Scan for backspace instead of underscore to delete chars—242C: 08 F0 F1; 243F: EA EA EA EA. Depending on your terminal, you may need to manually type Ctrl-H for backspaces (many terminals send DEL/Ctrl-? instead!)
 
 # Getting KIM BASIC 9 v1.1 to run on Apple II
 
-(unfinished/failed, but these are the notes for how far I got)
+(*ignore this section*. unfinished/failed Apple II port, but these are the notes for how far I got)
 
 bobbin invocation:
 ```
@@ -150,4 +78,3 @@ start BASIC with:
 ```
 
 ...works, but there's no local echo?
-

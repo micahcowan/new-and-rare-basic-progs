@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+DIR=${0%/*}
+if test -z "$DIR"; then DIR=.; fi
+
+if ! test -e "$DIR"/KB9.BIN; then
+    echo >&2 "Please place the modified KIM-1 BASIC 9 binary in KB9.BIN"
+    exit 1
+fi
+
+main() {
+    local STTY="$(stty -g)"         # save terminal settings
+    trap 'stty "$STTY"' EXIT        # and setup auto-restore
+
+    stty raw; stty isig -ctlecho    # set unbuffered terminal I/O,
+                                    # with CRs (not LFs), and
+                                    # allowing signals like Ctrl-C
+
+    # stdbuf tool is to prevent line-buffering in C stdio routines
+    { header; seed; stdbuf -i0 -o0 cat "$@" /dev/stdin; } \
+        | stdbuf -i0 -o0 run6502 \
+            -R 4065 \
+            -l 2000 "$DIR"/KB9.BIN \
+            -P 1EA0 \
+            -G 1E5A
+}
+
+header() {
+    # Answers to: MEMORY SIZE? TERMINAL WIDTH? WANT SIN-COS-TAN-ATN?
+    printf '56000\r80\rY\r'
+}
+
+seed() {
+    # Enter instructions to seed the random number generator
+    echo "R = RND(-$((RANDOM % 32767)))"
+    echo "NEW"
+    echo "? \"START\""
+}
+
+main "$@"
+exit 0
