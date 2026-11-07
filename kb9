@@ -9,8 +9,8 @@ if ! test -e "$DIR"/KB9.BIN; then
 fi
 
 main() {
-    local STTY="$(stty -g)"         # save terminal settings
-    trap 'stty "$STTY"' EXIT        # and setup auto-restore
+    STTY="$(stty -g)"         # save terminal settings
+    trap finish EXIT          # and setup auto-restore
 
     stty raw; stty isig -ctlecho    # set unbuffered terminal I/O,
                                     # with CRs (not LFs), and
@@ -41,6 +41,11 @@ sendbasic() {
     for arg; do
         tr '\n' '\r' < "$arg"
     done
+}
+
+finish() {
+    stty "$STTY"    # restore original terminal settings
+    printf '\033[?25h'
 }
 
 main "$@"
