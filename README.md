@@ -21,7 +21,12 @@ provide color. You'll either need to adapt those to use more appropriate
 techniques for your chosen emulator/BASIC implementation, or else emulate a
 serial connection so that I/O goes through a terminal program.
 
-The listings are in:
-  * `orig/` the original listings from the book (or as close as I can type them)
-  * `run6502/` adaptations to my particular KB9 emulation setup (see [RUNNING.md](RUNNING.md))
-  * `appleiie/` adaptations to AppleSoft, running on an Apple //e. I tested these using my terminal-oriented emulator [bobbin](https://github.com/micahcowan/bobbin)—i.e. `bobbin --remain-tty < appleiie/borg-attack.bas`.
+The listings for each BASIC program are each in a dedicated directory.
+All of them end in `.bas`, and are named according to the following
+conventions:
+
+  * `original.bas` - the original listings from the book (or as close as I can type them)
+  * `tweaks.bas` - modified from the original to include changes I personally find more comfortable. If I find a bug, I fix it in this listing. "ENTER A NUMBER" prompts for seeding the PRNG are removed, as the `kb9` wrapper script automatically seeds the PRNG.
+  * `apple2e` - ported to AppleSoft, intended to run on an Apple //e or later (80-column support via `PR#3`.
+
+I tested the apple2e.bas files using my terminal-oriented emulator [bobbin](https://github.com/micahcowan/bobbin)—i.e. `bobbin --remain-tty < borg-attack/apple2e.bas`.
