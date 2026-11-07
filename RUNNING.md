@@ -51,6 +51,13 @@ locations given below (i.e., leave out the initial "2" in locations).
 * Disable BREAK on empty INPUT lines by changing the value at $2AA8 to $A9 (POKE 10920, 169)
 * Scan for backspace instead of underscore to delete chars—242C: 08 F0 F1; 243F: EA EA EA EA. Depending on your terminal, you may need to manually type Ctrl-H for backspaces (many terminals send DEL/Ctrl-? instead!)
 
+### One Remaining Issue
+
+The only remaining issue I have with this setup, is that run6502 doesn't
+throttle its CPU speed to be anything near as slow as 6502s of the 70s and
+80s. Therefore, attempts to pause in BASIC using a FOR loop (e.g., `FOR I=1
+TO 500:NEXT I`) do not work.
+
 # Getting KIM BASIC 9 v1.1 to run on Apple II
 
 (*ignore this section*. unfinished/failed Apple II port, but these are the notes for how far I got)
