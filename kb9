@@ -32,9 +32,9 @@ header() {
 
 seed() {
     # Enter instructions to seed the random number generator
-    echo "R = RND(-$((RANDOM % 32767)))"
-    echo "NEW"
-    echo "? \"START\""
+    printf '%s\r' "R = RND(-$((RANDOM % 32767)))"
+    printf '%s\r' "NEW"
+    printf '%s\r' "? \"START\""
 }
 
 sendbasic() {
