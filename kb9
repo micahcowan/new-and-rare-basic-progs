@@ -17,7 +17,7 @@ main() {
                                     # allowing signals like Ctrl-C
 
     # stdbuf tool is to prevent line-buffering in C stdio routines
-    { header; seed; stdbuf -i0 -o0 cat "$@" /dev/stdin; } \
+    { header; seed; sendbasic "$@"; stdbuf -i0 -o0 cat; } \
         | stdbuf -i0 -o0 run6502 \
             -R 4065 \
             -l 2000 "$DIR"/KB9.BIN \
@@ -35,6 +35,12 @@ seed() {
     echo "R = RND(-$((RANDOM % 32767)))"
     echo "NEW"
     echo "? \"START\""
+}
+
+sendbasic() {
+    for arg; do
+        tr '\n' '\r' < "$arg"
+    done
 }
 
 main "$@"
