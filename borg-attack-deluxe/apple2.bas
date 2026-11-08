@@ -187,17 +187,19 @@
 3160 PRINT "      _____ ____ ____ _____ ___ _  _ "
 3170 PRINT "      !___!   !    !  !___! !   !_/   /"
 3180 PRINT " .    !   !   !    !  !   ! !__ ! \_ ."
-3190 PRINT:PRINT
-3200 PRINT "  ____+------+."
-3210 PRINT "      !'.    ! '.  .    .-'\   \'-.  . "
-3220 PRINT "      !  '+--+---+    .'   \\\\\\  '.  "
-3230 PRINT "    __!   !  !   !   /   \\\\\\\    .\ "
-3240 PRINT "      +---+--+.  !  ;     \\\\      \\;"
-3250 PRINT "       '. !    '.!  \   \\\\\\     \\\\"
-3260 PRINT "     ____'+------+  ;\\\\\\\\    \\\\\;"
-3265 PRINT "                     \\\        \\\\\/"
-3270 PRINT "   BY DAVE HASSLER    '.         \\.'"
-3280 PRINT "  AND MICAH COWAN    .  '-. ___ .-'"
+3190 PRINT "                          ."
+3195 PRINT "         ."
+3110 REM    1234567890123456789012345678901234567890
+3200 PRINT "  ____+------+.              ____"
+3210 PRINT "      !'.    ! '.  .     .-'\   \'-.  ."
+3220 PRINT "      !  '+--+---+      :   \\\\\\  :"
+3230 PRINT "    __!   !  !   !     /   \\\\\\\  .\"
+3240 PRINT "      +---+--+.  !  .  ;     \\\\   \;"
+3250 PRINT "       '. !    '.!    !   \\\\\\  \\\\!"
+3260 PRINT "     ____'+------+     ;\\\\\\\ \\\\\;"
+3265 PRINT "                       \\\    \\\\\\\/"
+3270 PRINT "   BY DAVE HASSLER      '.        \.' ."
+3280 PRINT "  AND MICAH COWAN    .    '.___ .-'"
 3290 PRINT
 3295 PRINT "A-W-S-D TO MOVE JUMP CROSSHAIR"
 3297 PRINT "   F TO FIRE     J TO JUMP"
@@ -304,4 +306,4 @@
 3909 PRINT:PRINT"GOOD LUCK, OFFICER!"
 3910 PRINT"    (...AND CAPS LOCK ON!)"
 3920 VTAB 24:FLASH:? "PRESS ANY KEY";
-3921 NORMAL:PRINT " TO RETURN TO TITLE. ";:GET A$:RETURN
+3921 NORMAL:PRINT "  TO START GAME. ";:GET A$:RETURN
