@@ -25,8 +25,10 @@ The listings for each BASIC program are each in a dedicated directory.
 All of them end in `.bas`, and are named according to the following
 conventions:
 
-  * `original.bas` - the original listings from the book (or as close as I can type them)
-  * `tweaks.bas` - modified from the original to include changes I personally find more comfortable. If I find a bug, I fix it in this listing. "ENTER A NUMBER" prompts for seeding the PRNG are removed, as the `kb9` wrapper script automatically seeds the PRNG.
-  * `apple2e` - ported to AppleSoft, intended to run on an Apple //e or later (80-column support via `PR#3`.
+ * `original.bas` - the original listings from the book (or as close as I can type them)
+ * `tweaks.bas` - modified from the original to include changes I personally find more comfortable. If I find a bug, I fix it in this listing. "ENTER A NUMBER" prompts for seeding the PRNG are removed, as the `kb9` wrapper script automatically seeds the PRNG.
+ * `apple2.bas`
+   * for 40-column Apple ][
+ * `apple2e` - ported to AppleSoft, intended to run on an Apple //e or later (80-column support via `PR#3`.
 
 I tested the apple2e.bas files using my terminal-oriented emulator [bobbin](https://github.com/micahcowan/bobbin)—i.e. `bobbin --remain-tty < borg-attack/apple2e.bas`.
