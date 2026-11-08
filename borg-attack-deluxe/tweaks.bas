@@ -277,4 +277,4 @@
 3920 PRINT"move 0, 1, or 2 grids at a time, reflecting the ensign's"
 3930 PRINT"total lack of experience."
 3940 PRINT:PRINT"GOOD LUCK, OFFICER! (...and Caps Lock ON!)":PRINT
-3950 ? YL$;"Press any key to begin the game. ";WH$:GET A$:?:RETURN
+3950 ? YL$;"Press any key to begin the game. ";WH$:GET A$:RETURN
